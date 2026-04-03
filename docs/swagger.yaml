@@ -1,0 +1,103 @@
+basePath: /
+definitions:
+  models.Request:
+    properties:
+      document_id:
+        type: string
+      page_id:
+        type: integer
+    type: object
+  models.Response:
+    properties:
+      message:
+        type: string
+      status:
+        type: integer
+    type: object
+  models.Segment:
+    properties:
+      document_id:
+        type: string
+      page_id:
+        type: integer
+      payload:
+        type: string
+      segment_id:
+        type: integer
+      total_segments:
+        type: integer
+    type: object
+host: localhost:8080
+info:
+  contact: {}
+  description: Приём запроса на конкретную страницу документа, загрузка изображения
+    из MinIO, сегментация и отправка сегментов на транспортный уровень.
+  title: Агентный уровень
+  version: "1.0"
+paths:
+  /process:
+    post:
+      consumes:
+      - application/json
+      description: Метод Process принимает запрос с транспортного уровня, загружает
+        изображение из MinIO, делит его на сегменты и для каждого сегмента вызывает
+        отправку на транспортный уровень.
+      parameters:
+      - description: Название документа и номер страницы
+        in: body
+        name: body
+        required: true
+        schema:
+          $ref: '#/definitions/models.Request'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/models.Response'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/models.Response'
+        "405":
+          description: Method Not Allowed
+          schema:
+            $ref: '#/definitions/models.Response'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/models.Response'
+      summary: Загрузка запрошенного с транспортного уровня изображения из MinIO,
+        деление на сегменты и вызов метода для их отправки на транспортный уровень
+      tags:
+      - agent
+  /send:
+    post:
+      consumes:
+      - application/json
+      description: Метод Send отправляет сегмент на транспортный уровень.
+      parameters:
+      - description: Сегмент
+        in: body
+        name: body
+        required: true
+        schema:
+          $ref: '#/definitions/models.Segment'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/models.Response'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/models.Response'
+      summary: Отправка сегмента на транспортный уровень
+      tags:
+      - agent
+swagger: "2.0"
+tags:
+- name: agent
