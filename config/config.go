@@ -7,6 +7,6 @@ const (
 	BucketName     = "documents"
 
 	SegmentSize  = 50 * 1024 // 50 Кбайт
-	TransportURL = "http://localhost:8081/receive"
+	TransportURL = "http://10.205.157.61:8080/receive"
 	ServerPort   = ":8080"
 )
