@@ -42,7 +42,7 @@ func Process(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	objectName := fmt.Sprintf("%s/%d.png", req.DocumentID, req.PageID)
+	objectName := fmt.Sprintf("%s/%d.jpg", req.DocumentID, req.PageID)
 
 	imageData, err := minio.DownloadImage(objectName)
 	if err != nil {
